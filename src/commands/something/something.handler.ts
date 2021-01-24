@@ -1,14 +1,19 @@
-import { Inject, Injectable, Scope } from '@nestjs/common';
-import { REQUEST } from '@nestjs/core';
+import { SomethingService } from './something.service';
+import { MyRequest } from './my-request';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { Request } from 'express';
 import { SomethingCommand } from './something.command';
+import { Injectable, Scope } from '@nestjs/common';
 
 @CommandHandler(SomethingCommand)
 @Injectable({ scope: Scope.REQUEST })
 export class SomethingHandler implements ICommandHandler<SomethingCommand> {
-  constructor(@Inject(REQUEST) private readonly req: Request) {}
+  constructor(
+    private readonly req: MyRequest,
+    private readonly service: SomethingService,
+  ) {}
+
   async execute(command: SomethingCommand): Promise<any> {
-    console.log(SomethingCommand.name, command.message, this.req?.ip);
+    this.req.request = command.req;
+    this.service.do(command.message);
   }
 }
