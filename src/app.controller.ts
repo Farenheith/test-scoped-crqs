@@ -1,14 +1,14 @@
 import { REQUEST } from '@nestjs/core';
 import { Controller, Get, Inject, Scope } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
 import { SomethingCommand } from './commands/something/something.command';
 import { Request } from 'express';
+import { MyCommandBus } from './transient-command-bus';
 @Controller({
   scope: Scope.REQUEST,
 })
 export class AppController {
   constructor(
-    private readonly commandBus: CommandBus,
+    private readonly commandBus: MyCommandBus,
     @Inject(REQUEST) private request: Request,
   ) {}
 
